@@ -1,0 +1,5 @@
+{
+  "name": "url-edit-contrast",
+  "description": "Improves URL highlight visibility in the WYSIWYG editor dark mode. Makes the selection transparent with a subtle dashed border instead of a solid block.",
+  "version": "1.0.0"
+}

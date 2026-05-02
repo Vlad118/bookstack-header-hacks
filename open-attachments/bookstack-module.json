@@ -1,0 +1,5 @@
+{
+  "name": "open-attachments",
+  "description": "Opens attachments in a new tab instead of downloading",
+  "version": "1.0.0"
+}

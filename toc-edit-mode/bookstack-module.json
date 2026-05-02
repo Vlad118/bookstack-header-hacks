@@ -1,0 +1,5 @@
+{
+  "name": "toc-edit-mode",
+  "description": "Adds a table of contents to the page editor sidebar, showing all headings for easy navigation while editing. (Old editor only)",
+  "version": "1.0.0"
+}

@@ -1,0 +1,5 @@
+{
+  "name": "sticky-table-heads",
+  "description": "Keeps table headers visible while scrolling",
+  "version": "1.0.0"
+}

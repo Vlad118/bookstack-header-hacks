@@ -1,0 +1,24 @@
+<!-- Open attachments instead of downloading (useful for PDF opeining inside the browser) -->
+
+
+<!-- Source: https://github.com/BookStackApp/BookStack/issues/1464#issuecomment-1231272502 -->
+
+<script>
+function previewPDF(item) {
+    // Überprüfen, ob das Element ein Nachkomme von <div component="attachments-list"> ist
+    if (item.closest('div[component="attachments-list"]')) {
+        return; // Wenn ja, keine Änderungen vornehmen
+    }
+
+
+    // Wenn der Link '/attachments/' enthält, '?open=true' anhängen
+    if (item.href.includes('/attachments/')) {
+        item.href += "?open=true";
+    }
+}
+
+
+window.onload = function() {
+    document.querySelectorAll('a').forEach(previewPDF);
+};
+</script>

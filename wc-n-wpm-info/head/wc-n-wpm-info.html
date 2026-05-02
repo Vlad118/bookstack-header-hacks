@@ -1,0 +1,38 @@
+<!-- Source: https://www.reddit.com/r/BookStack/comments/1izclk4/word_count_info_and_other_stats_on_bookstack/ -->
+
+<script>
+  // Hack: page statistics like word count / read time
+  function renderPageReadingTime() {
+    const page = document.querySelector('.page-content');
+    if (page !== null) {
+      const pageTitle = page.getElementsByTagName('h1')[0];
+      const pageContent = pageTitle.parentElement.innerText;
+
+      // Remove HTML tags and extra spaces
+       const cleanText = pageContent.replace(/(<([^>]+)>)/gi, "").trim();
+
+      // Count words and characters
+      const words = cleanText.split(/\s+/).length;
+      const characters = cleanText.length;
+
+      // Estimate reading time (200 WPM) and talk time (130 WPM)
+      const readingTimeInMinutes = Math.ceil(words / 200);
+      // const talkTimeInMinutes = Math.ceil(words / 130);
+
+      // Create element to display reading, talk time, word, and character count
+      // const readingInfoEl = document.createElement('p');
+      const readingInfoEl = document.createElement('div');
+      readingInfoEl.style = 'font-size: 0.85em; color: #6b778c; margin: -10px 0 20px;'
+      readingInfoEl.textContent = 
+      // `${words} words • ${characters} characters • ${readingTimeInMinutes} min read • ${talkTimeInMinutes} min talk`;
+      `${words} words • ${characters} characters • ${readingTimeInMinutes} min read`;
+
+      // Insert the info after the page title
+      pageTitle.after(readingInfoEl);
+    }
+  }
+
+// Delay execution to ensure the page content is loaded
+setTimeout(renderPageReadingTime, 100);
+
+</script>

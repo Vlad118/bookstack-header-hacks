@@ -1,0 +1,66 @@
+<!-- Source: https://gitlab.cemea.org/-/snippets/4 -->
+
+<script>
+const generateTOC = () => {
+    let out = document.createElement('div');
+    out.id = "hack-toc-editor";
+    // Bookstack doesn't use h1 inside the editor, only h2-h6
+    let list = document.createElement('ul');
+    let previousLevel = 2;
+    let currentList = list;
+    for (const x of tinymce.activeEditor.getBody().querySelectorAll('h2,h3,h4,h5,h6')) {
+        // Create our link to content
+        let link = document.createElement('a');
+        link.setAttribute('data-id', x.id);
+        link.textContent = x.textContent;
+        link.addEventListener('click', onLinkClicked);
+        let li = document.createElement('li');
+        li.append(link);
+
+
+        // Now let's find out where we insert it
+        let level = Number(x.tagName.toLowerCase().replace('h', ''));
+        // We need to go deeper, let's create new level(s) 
+        // Will be triggered only if level > previousLevel
+        for(let i = previousLevel; i < level; i++) {
+            let newList = document.createElement('ul');
+            currentList.append(newList);
+            currentList = newList;
+        }
+        // We need to go back one (or more) level(s)
+        // Will be triggered only if level < previousLevel
+        for(let i = previousLevel; i > level; i--) {
+            currentList = currentList.parentElement;
+        }
+        // Now, let's append our link at the right place
+        currentList.append(li);
+        previousLevel = level;
+    }
+    out.append(list);
+    return out;
+}
+// Add TOC content inside comment sidebar
+const populateTOC = () => {
+    document.querySelector('.comment-container-compact').append(generateTOC());
+}
+
+const scrollToHeader = (id) => {
+    // querySelector doesn't work for some ID which contains accentued characters, so use getElementByID which works fine
+    tinymce.activeEditor.getDoc().getElementById(id).scrollIntoView();
+}
+const onLinkClicked = (event) => {
+    let id = event.target.getAttribute('data-id');
+    scrollToHeader(id);
+}
+// It's ugly bit it works : just wait until we find tinyMCE to populate ToC !
+const checkForTiny = () => {
+    if (window?.tinymce?.activeEditor?.getDoc()) {
+        populateTOC();
+    }
+    else {
+        setTimeout(checkForTiny, 1000);
+    }
+}
+
+setTimeout(checkForTiny, 1000);
+</script>

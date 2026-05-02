@@ -1,0 +1,102 @@
+<!-- Custom Hack: anchor link at headers like in GitHub -->
+<!-- Credit: https://github.com/Vlad118 -->
+
+<style>
+    /* 1. Prevent the header text and icon from splitting onto two lines */
+    h1, h2, h3, h4, h5, h6 {
+        white-space: nowrap;
+        position: relative;
+    }
+
+    /* 2. Ensure any internal <br> tags added by the editor are ignored */
+    h1 br, h2 br, h3 br, h4 br, h5 br, h6 br {
+        display: none;
+    }
+  
+    /* Styling the anchor link icon */
+    .header-anchor {
+        text-decoration: none;
+        color: #ccc;
+        position: absolute;
+        left: -25px;
+        top: 50%;
+        transform: translateY(-50%);
+        opacity: 0;
+        transition: opacity 0.2s ease-in-out;
+        font-size: 16px;
+        vertical-align: middle;
+        display: inline-block;
+    }
+
+    /* Show the icon when hovering over the header or the icon itself */
+    h1:not(#bkmrk-page-title):hover .header-anchor,
+    h2:hover .header-anchor, 
+    h3:hover .header-anchor, 
+    h4:hover .header-anchor, 
+    h5:hover .header-anchor, 
+    h6:hover .header-anchor {
+        opacity: 1;
+    }
+
+    .header-anchor:hover {
+        
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Fallback function for older browsers or non-HTTPS sites
+        function copyToClipboardFallback(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            // Ensure textarea is not visible but part of DOM
+            textArea.style.position = "fixed";
+            textArea.style.left = "-9999px";
+            textArea.style.top = "0";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+            } catch (err) {
+                console.error('Fallback copy failed', err);
+            }
+            document.body.removeChild(textArea);
+        }
+
+        const headers = document.querySelectorAll('.page-content h1:not(#bkmrk-page-title), .page-content h2, .page-content h3, .page-content h4, .page-content h5, .page-content h6');
+
+        headers.forEach(header => {
+            if (header.id) {
+                const anchor = document.createElement('a');
+                anchor.className = 'header-anchor';
+                anchor.href = '#' + header.id;
+                // link icon
+                anchor.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="m7.775 3.275l1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0a.75.75 0 0 1 .018-1.042a.75.75 0 0 1 1.042-.018a2 2 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.75.75 0 0 1-1.042-.018a.75.75 0 0 1-.018-1.042m-4.69 9.64a2 2 0 0 0 2.83 0l1.25-1.25a.75.75 0 0 1 1.042.018a.75.75 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0a.75.75 0 0 1-.018 1.042a.75.75 0 0 1-1.042.018a2 2 0 0 0-2.83 0l-2.5 2.5a2 2 0 0 0 0 2.83"/></svg>';
+                anchor.title = 'Copy link to this section';
+                
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const fullUrl = window.location.origin + window.location.pathname + window.location.search + '#' + header.id;
+                    
+                    // Try modern API first, then fallback
+                    if (navigator.clipboard && window.isSecureContext) {
+                        navigator.clipboard.writeText(fullUrl).catch(() => copyToClipboardFallback(fullUrl));
+                    } else {
+                        copyToClipboardFallback(fullUrl);
+                    }
+                    
+                    // Visual feedback
+                    const originalText = this.innerHTML;
+                    // check icon
+                    this.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.75.75 0 0 1 .018-1.042a.75.75 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0"/></svg>';
+                    setTimeout(() => this.innerHTML = originalText, 1500);
+                    
+                    history.pushState(null, null, '#' + header.id);
+                });
+
+                header.prepend(anchor);
+            }
+        });
+    });
+</script>

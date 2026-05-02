@@ -1,0 +1,59 @@
+<!-- Image Gallery Hack for BookStack - Adds a gallery viewer for images -->
+<!-- Source https://github.com/BookStackApp/BookStack/issues/1449 -->
+
+<style>
+/* Table styles */
+.gal-tab { width: 100%; min-height: 50px; border-collapse: collapse; }
+
+/* Turn the table cell into a grid container */
+.image-gal td { 
+    display: grid !important; 
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)) !important; 
+    gap: 12px !important; 
+    padding: 0 !important; 
+}
+
+/* Each <p> (image wrapper) becomes a grid item */
+.image-gal td > p { margin: 0 !important; }
+
+/* Anchor fills the grid cell */
+.image-gal td > p > a { display: block !important; }
+
+/* Image sizing and styling */
+.image-gal img { 
+    display: block !important; 
+    width: 100% !important; 
+    height: auto !important; 
+    object-fit: cover !important; 
+    border-radius: 4px !important; 
+}
+</style>
+
+<!-- GLightbox Library -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
+<script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+
+<script>
+// Initialize GLightbox
+document.addEventListener("DOMContentLoaded", function () {
+    GLightbox({ selector: '.gal-tab a', touchNavigation: true, loop: true });
+});
+
+// Add "Insert Gallery" button to TinyMCE
+window.addEventListener('editor-tinymce::pre-init', event => {
+    const mceConfig = event.detail.config;
+    mceConfig.toolbar += ' insert-gallery';
+});
+
+window.addEventListener('editor-tinymce::setup', event => {
+    const editor = event.detail.editor;
+    editor.ui.registry.addButton('insert-gallery', {
+        tooltip: 'Insert Gallery',
+        icon: 'gallery',
+        onAction() {
+            // Inserts a pre-formatted table cell that triggers the CSS above
+            editor.insertContent('<div class="image-gal"><table class="gal-tab"><colgroup><col style="width: 99.881%;"></colgroup><tbody><tr><td><br></td></tr></tbody></table></div>')
+        }
+    });
+});
+</script>

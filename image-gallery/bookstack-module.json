@@ -1,0 +1,5 @@
+{
+  "name": "image-gallery",
+  "description": "Adds an image gallery with lightbox viewer. Provides an Insert Gallery button in the WYSIWYG editor to create responsive image grids with fullscreen viewing.",
+  "version": "1.0.0"
+}

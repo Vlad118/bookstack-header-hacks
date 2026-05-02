@@ -1,0 +1,260 @@
+<!-- Edit add-on for Page Preview. Requires preview-pages.html to be loaded -->
+<!-- Credit: https://github.com/florinm03 -->
+
+<style>
+    .page-preview-container .entity-list-item {
+        padding-right: 80px;
+    }
+
+    .quick-edit-btn {
+        position: absolute;
+        top: 10px;
+        right: 46px; 
+        z-index: 10;
+        background: transparent;
+        border: 1px solid var(--color-border);
+        border-radius: 4px;
+        color: var(--color-text-muted);
+        cursor: pointer;
+        padding: 4px 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+    }
+
+    .quick-edit-btn:hover {
+        color: var(--color-primary);
+        border-color: var(--color-primary);
+        background: var(--color-lighter);
+    }
+
+    .quick-edit-btn svg {
+        width: 18px;
+        height: 18px;
+        fill: currentColor;
+        pointer-events: none;
+    }
+
+    .quick-cancel-btn {
+        position: absolute;
+        top: 10px;
+        right: 80px;
+        z-index: 10;
+        background: transparent;
+        border: 1px solid var(--color-border);
+        border-radius: 4px;
+        color: var(--color-text-muted);
+        cursor: pointer;
+        padding: 4px 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+    }
+
+    .quick-cancel-btn:hover {
+        color: var(--color-primary);
+        border-color: var(--color-primary);
+        background: var(--color-lighter);
+    }
+
+    .quick-cancel-btn svg {
+        width: 18px;
+        height: 18px;
+        fill: currentColor;
+        pointer-events: none;
+    }
+
+    .quick-edit-textarea {
+        width: 100%;
+        height: 300px;
+        padding: 16px;
+        background: var(--color-page-content);
+        color: var(--color-text);
+        border: none;
+        resize: vertical;
+        font-family: monospace;
+        font-size: 1.1em;
+        line-height: 1.5;
+    }
+    .quick-edit-textarea:focus { outline: none; }
+    
+    .quick-edit-textarea.saving {
+        opacity: 0.6;
+        cursor: wait;
+    }
+</style>
+
+<script>
+    (function () {
+        const iconPencil = `<svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>`;
+        const iconCheck = `<svg viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>`;
+        const iconSpinner = `<svg viewBox="0 0 24 24"><path d="M12 4V2A10 10 0 0 0 2 12h2a8 8 0 0 1 8-8z"><animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="1s" repeatCount="indefinite"/></path></svg>`;
+        const iconX = `<svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>`;
+
+        function attachEditButton(container) {
+            if (!container || container._editAttached) return;
+            container._editAttached = true;
+
+            const url = container._previewUrl;
+            const previewDiv = container._previewDiv;
+            const viewBtn = container._viewBtn;
+            const state = container._previewState || {};
+            const api = window.BookStackPagePreview || {};
+            const iconEyeOff = api.iconEyeOff || '';
+            const loadPreview = api.loadPreview;
+
+            if (!url || !previewDiv || !loadPreview) return;
+
+            const editBtn = document.createElement('button');
+            editBtn.className = 'quick-edit-btn title-action print-hidden';
+            editBtn.title = "Quick Edit Markdown";
+            editBtn.innerHTML = iconPencil;
+            container.appendChild(editBtn);
+
+            const cancelBtn = document.createElement('button');
+            cancelBtn.className = 'quick-cancel-btn title-action print-hidden';
+            cancelBtn.title = "Cancel";
+            cancelBtn.innerHTML = iconX;
+            cancelBtn.style.display = 'none';
+            container.appendChild(cancelBtn);
+
+            let csrfToken = '';
+            let pageTitle = '';
+
+            editBtn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+
+                if (!state.isEditing) {
+                    if (!previewDiv.classList.contains('is-open')) {
+                        previewDiv.classList.add('is-open');
+                        if (iconEyeOff) viewBtn.innerHTML = iconEyeOff;
+                        viewBtn.title = "Hide Preview";
+                    }
+
+                    editBtn.innerHTML = iconSpinner;
+                    try {
+                        const res = await fetch(url + '/edit');
+                        const html = await res.text();
+                        const doc = new DOMParser().parseFromString(html, 'text/html');
+
+                        const mdTextarea = doc.querySelector('textarea[name="markdown"]');
+                        const tokenInput = doc.querySelector('input[name="_token"]');
+                        const titleInput = doc.querySelector('input[name="name"]');
+
+                        if (!mdTextarea || !tokenInput || !titleInput) {
+                            alert('Markdown editor not found! This page might be using the WYSIWYG editor.');
+                            editBtn.innerHTML = iconPencil;
+                            return;
+                        }
+
+                        csrfToken = tokenInput.value;
+                        pageTitle = titleInput.value;
+
+                        previewDiv.innerHTML = `<textarea class="quick-edit-textarea" spellcheck="false">${mdTextarea.value}</textarea>`;
+
+                        state.isEditing = true;
+                        state.originalContent = mdTextarea.value;
+                        editBtn.innerHTML = iconCheck;
+                        editBtn.title = "Save Changes";
+                        cancelBtn.style.display = 'flex';
+                    } catch (err) {
+                        alert('Failed to load edit view.');
+                        editBtn.innerHTML = iconPencil;
+                    }
+                } else {
+                    const textarea = previewDiv.querySelector('textarea');
+                    if (!textarea) return;
+
+                    textarea.disabled = true;
+                    textarea.classList.add('saving');
+                    editBtn.innerHTML = iconSpinner;
+                    editBtn.title = "Saving...";
+                    cancelBtn.style.display = 'none';
+
+                    const newMarkdown = textarea.value;
+
+                    const formData = new URLSearchParams();
+                    formData.append('_token', csrfToken);
+                    formData.append('_method', 'PUT');
+                    formData.append('name', pageTitle);
+                    formData.append('markdown', newMarkdown);
+
+                    try {
+                        const saveRes = await fetch(url, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: formData.toString()
+                        });
+
+                        if (saveRes.ok) {
+                            state.isEditing = false;
+                            state.originalContent = null;
+                            editBtn.innerHTML = iconPencil;
+                            editBtn.title = "Quick Edit Markdown";
+
+                            loadPreview(url, previewDiv);
+                            state.hasLoadedPreview = true;
+                        } else {
+                            textarea.disabled = false;
+                            textarea.classList.remove('saving');
+                            alert('Failed to save page.');
+                            editBtn.innerHTML = iconCheck;
+                            editBtn.title = "Save Changes";
+                            cancelBtn.style.display = 'flex';
+                        }
+                    } catch (err) {
+                        textarea.disabled = false;
+                        textarea.classList.remove('saving');
+                        alert('Network error while saving.');
+                        editBtn.innerHTML = iconCheck;
+                        editBtn.title = "Save Changes";
+                        cancelBtn.style.display = 'flex';
+                    }
+                }
+            });
+
+            cancelBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const textarea = previewDiv.querySelector('textarea');
+                const hasChanges = textarea && textarea.value !== state.originalContent;
+
+                if (hasChanges) {
+                    if (!confirm('You have unsaved changes. Are you sure you want to cancel and lose your changes?')) {
+                        return;
+                    }
+                }
+
+                state.isEditing = false;
+                state.originalContent = null;
+                editBtn.innerHTML = iconPencil;
+                editBtn.title = "Quick Edit Markdown";
+                cancelBtn.style.display = 'none';
+
+                loadPreview(url, previewDiv);
+                state.hasLoadedPreview = true;
+            });
+        }
+
+        function attachAll() {
+            document.querySelectorAll('.page-preview-container').forEach(attachEditButton);
+        }
+
+        // Hook into existing containers as they are created by preview-pages.html.
+        document.addEventListener('preview-container-ready', (e) => {
+            attachEditButton(e.target);
+        });
+        document.addEventListener('preview-pages-ready', attachAll);
+
+        // Fallback in case the preview script ran before this listener was registered.
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', attachAll);
+        } else {
+            attachAll();
+        }
+    })();
+</script>

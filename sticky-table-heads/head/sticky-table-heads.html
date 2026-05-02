@@ -1,0 +1,27 @@
+<!-- sticky Table heads -->
+<!-- Source: https://www.reddit.com/r/BookStack/comments/1kwnixb/whats_in_your_html_head_customization/ -->
+
+<style>
+.page-content table.sticky-thead thead {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+</style>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const viewportHeight = window.innerHeight;
+
+
+    document.querySelectorAll('.page-content table').forEach(function(table) {
+        const tableHeight = table.getBoundingClientRect().height;
+
+
+        if (tableHeight > viewportHeight) {
+            table.classList.add('sticky-thead');
+        }
+    });
+});
+</script>
