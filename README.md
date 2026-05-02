@@ -57,8 +57,7 @@ To disable a specific module, simply rename its folder (e.g., from `sort-tables-
 ## Requirements
 
 - BookStack instance (latest version recommended)
-  - Theme Module System was added in the [v26-3](https://www.bookstackapp.com/blog/bookstack-release-v26-03/)
-- A custom theme enabled in BookStack settings
+  - Theme Module System was added in the [v26-3](https://www.bookstackapp.com/blog/bookstack-release-v26-03/).
 
 ## Contributing
 
@@ -72,7 +71,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - [BookStack](https://www.bookstackapp.com/) - The amazing documentation platform
 - [MathJax](https://www.mathjax.org/) - For LaTeX rendering
-- All contributors are mentioned in their specific code blocks
+- All contributors/sources are mentioned in their specific code blocks
 
 ---
 
