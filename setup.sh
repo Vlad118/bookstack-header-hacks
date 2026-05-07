@@ -216,7 +216,7 @@ echo ""
 echo -e "${BOLD}${RED}Cleanup Confirmation${RESET}"
 echo -e "${DIM}The following will be removed from the destination directory:${RESET}"
 echo -e "${DIM}  - Unselected modules${RESET}"
-echo -e "${DIM}  - Meta files: LICENSE, README.md, setup.sh, .git/${RESET}"
+echo -e "${DIM}  - Meta files: LICENSE, README.md, setup.sh, .git/, pictures/${RESET}"
 echo ""
 read -r -p "Do you want to proceed with cleanup? [y/N] " confirm
 
@@ -241,6 +241,10 @@ case "$confirm" in
     # Remove .git directory
     if [ -d "$DEST_DIR/.git" ]; then
       rm -rf "$DEST_DIR/.git"
+    fi
+    # Remove pictures directory
+    if [ -d "$DEST_DIR/pictures" ]; then
+      rm -rf "$DEST_DIR/pictures"
     fi
     ;;
   *)
