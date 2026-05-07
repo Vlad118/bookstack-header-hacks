@@ -21,6 +21,18 @@ services:
       - ./bookstack-header-hacks:/var/www/bookstack/themes/custom-theme/modules
 ```
 
+### Quick Install Script
+
+Execute the following commands in the directory where you want to clone the repository. 
+This will clone the repo, navigate into it, and run the setup script, where you will choose which to keep and remove the other unnecessary files.
+
+```bash
+git clone https://github.com/florinm03/bookstack-header-hacks.git
+cd bookstack-header-hacks
+chmod +x setup.sh
+./setup.sh
+```
+
 ## Available Modules
 
 | Module | Description |
