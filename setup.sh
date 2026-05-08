@@ -83,7 +83,7 @@ draw_menu() {
   clear_screen
   echo -e "${BOLD}${CYAN}  BookStack Header Hacks — Module Installer${RESET}"
   echo -e "${DIM}  Choose which modules to install.${RESET}"
-  echo -e "${DIM}  Unselected modules and meta files (LICENSE, README.md, setup.sh) will be removed.${RESET}"
+  echo -e "${DIM}  Unselected modules and meta files (LICENSE, README.md, setup.sh, .git/, pictures/) will be removed.${RESET}"
   echo ""
   echo -e "${DIM}  Installing to: ${DEST_DIR}${RESET}"
   echo ""
