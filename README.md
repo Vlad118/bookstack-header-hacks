@@ -37,7 +37,7 @@ chmod +x setup.sh
 
 | Module | Description | Preview |
 |--------|-------------|---------|
-| [`header-anchor-link/`](header-anchor-link/) | Adds clickable anchor links to page headers. Hover over headers to see a link icon. Click to copy the section URL to your clipboard. | ![](pictures/Link.png)
+| [`header-anchor-link/`](header-anchor-link/) | Adds clickable anchor links to page headers. Hover over headers to see a link icon. Click to copy the section URL to your clipboard. | ![](pictures/Anchor.png)
 | [`image-gallery/`](image-gallery/) | Adds an image gallery with lightbox viewer. Provides an Insert Gallery button in the WYSIWYG editor to create responsive image grids with fullscreen viewing. | ![](pictures/Gallery.png)
 | [`LaTeX-support/`](LaTeX-support/) | Adds MathJax support for rendering LaTeX mathematical equations. Use `$...$` for inline math. | ![](pictures/LaTeX.png)
 | [`open-attachments/`](open-attachments/) | Opens attachments (especially PDFs) in a new browser tab instead of downloading them. |
