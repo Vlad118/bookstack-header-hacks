@@ -236,6 +236,21 @@ function renderPdf(el) {
 
 
 window.addEventListener('DOMContentLoaded', function() {
+  
+  // Pre-process Markdown Links
+  // Finds links rendered from markdown like [pdf](https://...) and transforms them into embed containers
+  document.querySelectorAll('.page-content a').forEach(function(link) {
+    let linkText = link.textContent.trim().toLowerCase();
+    
+    if (linkText === 'pdf' || linkText === 'embed-pdf') {
+      let embedContainer = document.createElement('p');
+      embedContainer.className = 'pdf-embed';
+      embedContainer.textContent = link.href; // Extract the URL
+      link.parentNode.replaceChild(embedContainer, link);
+    }
+  });
+
+  // Render all PDF containers (Handles both WYSIWYG and transformed Markdown)
   document.querySelectorAll('.pdf-embed').forEach(renderPdf);
 });
 </script>
