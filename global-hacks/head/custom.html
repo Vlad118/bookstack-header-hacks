@@ -8,7 +8,19 @@
   * {
       font-family: 'JetBrains Mono', monospace !important;
   }
-  
+
+  /*This removes the focus outline when interacting with the mouse. Tab navigation will still show the outline, ensuring accessibility for keyboard users.*/
+  * {
+    box-sizing: border-box;
+    
+  }
+  *:focus:not(:focus-visible) {
+      outline: none !important;
+  }
+  *:focus-visible {
+      outline: 1px dotted var(--color-primary) !important;
+      outline-offset: 2px;
+  }
 </style>
 
 <script>    
