@@ -48,7 +48,7 @@ chmod +x setup.sh
 | [`sticky-table-heads/`](sticky-table-heads/) | Keeps table headers fixed at the top while scrolling, for tables taller than the viewport. |
 | [`toc-edit-mode/`](toc-edit-mode/) | Adds a table of contents to the page editor sidebar, showing all headings (h2-h6) for easy navigation while editing. | ![](pictures/TOC.png)
 | [`url-edit-contrast/`](url-edit-contrast/) | Improves URL highlight visibility in the WYSIWYG editor dark mode with a subtle dashed border. |
-| [`wc-n-wpm-info/`](wc-n-wpm-info/) | Displays word count, character count, and estimated reading time on each page. | ![](pictures/Time.png)
+| [`wc-n-wpm-info/`](wc-n-wpm-info/) | Displays word count, character count, and estimated reading time on each page. | ![](pictures/Words.png)
 | [`global-hacks/`](global-hacks/) | Miscellaneous global customizations that apply to all pages. |
 
 ## Module Structure
